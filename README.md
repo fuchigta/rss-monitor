@@ -259,7 +259,7 @@ docker-compose exec app python main.py collect
 docker-compose up
 
 # Pythonパッケージの追加
-# app/requirements.txt を編集後（uvを使用）
+# app/pyproject.toml を編集後
 docker-compose build app
 docker-compose up -d app
 ```
@@ -270,7 +270,7 @@ docker-compose up -d app
 
 ```bash
 # パッケージを追加する場合
-# 1. app/requirements.txt に追加
+# 1. app/pyproject.toml の dependencies に追加
 # 2. コンテナを再ビルド
 docker-compose build app
 docker-compose up -d app

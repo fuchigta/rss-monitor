@@ -6,16 +6,16 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     postgresql-client \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:$PATH"
+# Install uv (use official image copy method)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN uv pip install --system -r requirements.txt
+# Copy project files
+COPY pyproject.toml .
+
+# Install dependencies
+RUN uv pip install --system -e .
 
 # Copy application code
 COPY . .
