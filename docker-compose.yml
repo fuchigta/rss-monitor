@@ -10,7 +10,6 @@ services:
       POSTGRES_PASSWORD: rss_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     healthcheck:
@@ -20,6 +19,21 @@ services:
       retries: 5
     networks:
       - rss-monitor-network
+
+  dbmate:
+    image: amacneil/dbmate:latest
+    container_name: rss-monitor-dbmate
+    environment:
+      DATABASE_URL: "postgres://rss_user:rss_password@postgres:5432/rss_monitor?sslmode=disable"
+    volumes:
+      - ./db:/db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - rss-monitor-network
+    command: up
+    restart: on-failure
 
   grafana:
     image: grafana/grafana:latest
@@ -57,6 +71,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      dbmate:
+        condition: service_completed_successfully
     networks:
       - rss-monitor-network
     command: tail -f /dev/null  # Keep container running for Ofelia

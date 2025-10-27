@@ -218,7 +218,72 @@ Ofeliaによる自動実行スケジュール（`ofelia/config.ini`）：
 - **alerts**: アラート履歴
 - **hatena_bookmarks**: はてなブックマーク数キャッシュ
 
-詳細は `db/init/01_schema.sql` を参照してください。
+詳細は `db/migrations/` 内のマイグレーションファイルを参照してください。
+
+## データベースマイグレーション
+
+このプロジェクトは [dbmate](https://github.com/amacneil/dbmate) を使用してデータベーススキーマを管理しています。
+
+### 自動マイグレーション
+
+初回起動時（`docker-compose up`）に、dbmateが自動的に全てのマイグレーションを適用します。
+
+### 手動マイグレーション操作
+
+```bash
+# マイグレーションステータスを確認
+./scripts/migrate.sh status
+
+# 全てのマイグレーションを適用
+./scripts/migrate.sh up
+
+# 最後のマイグレーションをロールバック
+./scripts/migrate.sh down
+
+# 新しいマイグレーションを作成
+./scripts/migrate.sh new add_new_column
+
+# 最後のマイグレーションをやり直す
+./scripts/migrate.sh redo
+```
+
+### 新しいマイグレーションの作成
+
+1. マイグレーションファイルを生成
+
+```bash
+./scripts/migrate.sh new add_feed_category
+```
+
+2. 生成されたファイル（`db/migrations/YYYYMMDDHHMMSS_add_feed_category.sql`）を編集
+
+```sql
+-- migrate:up
+ALTER TABLE feeds ADD COLUMN category VARCHAR(100);
+
+-- migrate:down
+ALTER TABLE feeds DROP COLUMN category;
+```
+
+3. マイグレーションを適用
+
+```bash
+./scripts/migrate.sh up
+```
+
+### マイグレーションのベストプラクティス
+
+- **常にupとdownを定義**: ロールバック可能にする
+- **小さく分割**: 1つのマイグレーションで1つの変更
+- **本番適用前にテスト**: ローカルでup/downを確認
+- **データ移行を含める**: スキーマ変更に伴うデータ変換も同じマイグレーションに含める
+
+### マイグレーション履歴の確認
+
+```bash
+# データベース内で確認
+docker-compose exec postgres psql -U rss_user -d rss_monitor -c "SELECT * FROM schema_migrations;"
+```
 
 ## トラブルシューティング
 
