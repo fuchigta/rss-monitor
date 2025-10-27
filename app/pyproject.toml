@@ -1,0 +1,17 @@
+[project]
+name = "rss-monitor"
+version = "0.1.0"
+description = "RSS feed monitoring system with Hatena Bookmark integration"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "feedparser==6.0.10",
+    "psycopg2-binary==2.9.9",
+    "requests==2.31.0",
+    "python-dateutil==2.8.2",
+    "pyyaml==6.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

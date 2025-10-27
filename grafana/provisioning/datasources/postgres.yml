@@ -1,0 +1,17 @@
+apiVersion: 1
+
+datasources:
+  - name: RSS Monitor DB
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    database: rss_monitor
+    user: rss_user
+    secureJsonData:
+      password: rss_password
+    jsonData:
+      sslmode: disable
+      postgresVersion: 1600
+      timescaledb: false
+    editable: true
+    isDefault: true

@@ -1,0 +1,16 @@
+# dbmate configuration file
+
+# Database URL (can be overridden by DATABASE_URL environment variable)
+url: "postgres://rss_user:rss_password@localhost:5432/rss_monitor?sslmode=disable"
+
+# Directory containing migration files
+migrations: "./db/migrations"
+
+# Database schema file location
+schema: "./db/schema.sql"
+
+# Wait for database to become available before running migrations
+wait: true
+
+# Maximum time to wait for database (default: 60s)
+wait_timeout: 60s
